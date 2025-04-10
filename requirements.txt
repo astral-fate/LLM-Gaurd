@@ -1,0 +1,5 @@
+Flask
+llm-guard
+openai>=1.0.0  # Use the modern OpenAI library
+python-dotenv  # To load the API key from .env
+transformers>=4.33.0,<4.40.0

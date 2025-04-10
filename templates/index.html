@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Guard Demo</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: auto; }
+        textarea { width: 100%; min-height: 100px; margin-bottom: 10px; padding: 8px; }
+        button { padding: 10px 15px; cursor: pointer; }
+        .result-box { margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9; }
+        .result-box h3 { margin-top: 0; }
+        .status-blocked { color: red; font-weight: bold; }
+        .status-allowed { color: green; font-weight: bold; }
+        pre { white-space: pre-wrap; word-wrap: break-word; background-color: #eee; padding: 10px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>LLM Guard Prompt Injection Demo</h1>
+    <p>Enter your prompt below. It will be scanned by LLM Guard before being sent to OpenAI.</p>
+
+    <form action="/process" method="post">
+        <label for="prompt">Your Prompt:</label><br>
+        <textarea id="prompt" name="prompt" required>{{ original_prompt if original_prompt }}</textarea><br>
+        <button type="submit">Submit Prompt</button>
+    </form>
+
+    {% if status %}
+    <div class="result-box">
+        <h3>Scan & Processing Results</h3>
+        <p><strong>Submitted Prompt:</strong></p>
+        <pre>{{ original_prompt }}</pre>
+
+        <p><strong>LLM Guard Status:</strong>
+           <span class="{{ 'status-blocked' if status == 'Blocked' else 'status-allowed' }}">
+               {{ status }}
+           </span>
+        </p>
+
+        {% if scan_results %}
+            <p><strong>Scan Details:</strong> <pre>{{ scan_results }}</pre></p>
+        {% endif %}
+
+        <p><strong>LLM Response / Action:</strong></p>
+        <pre>{{ result }}</pre>
+    </div>
+    {% endif %}
+
+</body>
+</html>
