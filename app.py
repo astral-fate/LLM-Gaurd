@@ -8,9 +8,8 @@ from llm_guard.input_scanners import (
     PromptInjection,
     Toxicity,
     BanTopics,
-    Code,
     Secrets
-    # Remove Harmful import as it's not available in your version
+    # Remove Code scanner entirely
 )
 from llm_guard.output_scanners import (
     NoRefusal,
@@ -30,46 +29,30 @@ app = Flask(__name__)
 
 # --- LLM Guard Setup ---
 
-# MORE SENSITIVE INPUT SCANNERS
+# BALANCED INPUT SCANNERS
 input_scanners = [
-    PromptInjection(threshold=0.05),  # Even more sensitive
-    Toxicity(threshold=0.05),         # Even more sensitive
-
-    # BanTopics with comprehensive list and low threshold
+    PromptInjection(threshold=0.3),  # Good balance of security/usability  
+    Toxicity(threshold=0.3),         # Good balance of security/usability
+    
+    # Keep BanTopics for semantic matching of harmful content
     BanTopics(
         topics=[
-            # Malware related
+            # Keep your existing topics list
             "malware", "virus", "ransomware", "trojan", "spyware", "keylogger",
             "create malware", "write malicious code", "build a virus",
             "make ransomware", "develop a trojan", "code for hacking",
             "harmful software creation", "script for computer attacks",
             "create code to steal data", "instructions for malware", "malware development",
             "hacking tutorial", "exploit development",
-
-            # Specific harmful actions
-            "delete system files", "steal passwords", "send user data",
-            "network scanner", "unauthorized access", "destroy computer",
-            "encrypt files", "steal data", "exfiltrate data", "phishing",
-            "denial of service", "ddos",
-
-            # Languages + harmful intent patterns
-            "powershell delete files", "python steal credentials", "perl scan network vulnerabilities",
-            "javascript keylogger", "ruby exploit",
-
-            # Broader Harmful Content Categories
-            "illegal activities", "terrorism", "non-consensual sexual content",
-            "child sexual abuse material", "hate speech", "promoting violence",
-            "self-harm instructions", "dangerous goods creation", "misinformation campaigns"
         ],
-        threshold=0.05  # <-- EVEN LOWER THRESHOLD for better detection
+        threshold=0.65  # Higher threshold to prevent false positives
     ),
-
-    # Additional scanners
+    
     Secrets(),
-    Code(languages=["PowerShell", "Perl", "Ruby", "JavaScript", "Python"], is_blocked=False),
+   
 ]
 
-# Output Scanners remain largely the same, adjust thresholds if needed
+
 output_scanners = [
     NoRefusal(),
     OutputToxicity(threshold=0.5),   # Filter toxic responses
@@ -89,7 +72,7 @@ else:
         genai.configure(api_key=GEMINI_API_KEY)
         # Consider using a model known for stronger safety features if needed,
         # although 'gemini-1.5-flash' is generally good.
-        gemini_model = genai.GenerativeModel('gemini-1.5-flash') # Updated model name if needed
+        gemini_model = genai.GenerativeModel('gemini-1.5-flash') 
         # Quick test call (optional, remove in production)
         # gemini_model.generate_content("test")
         gemini_available = True
@@ -227,6 +210,5 @@ def process_prompt():
 
 # --- Main Execution ---
 if __name__ == '__main__':
-    # Set debug=False for production deployments
-    # Use 0.0.0.0 to be accessible on the network, default port is 5000
+
     app.run(host='0.0.0.0', port=5001, debug=True)
