@@ -20,4 +20,14 @@ conda activate guard
 cd C:\Users\Fatima\Desktop\llm-guard-app
 python run.py
 
+
+
+pip uninstall pandas numpy
+
+
+pip install --no-cache-dir pandas numpy
+
+
+
+
 ```
