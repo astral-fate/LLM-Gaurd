@@ -26,7 +26,7 @@ load_dotenv()
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 app = Flask(__name__)
-SALES_CSV_PATH = 'sales.csv' # You can change this path if your CSV is elsewhere
+SALES_CSV_PATH = 'sales.csv' 
 
 # --- LLM Guard Input Scanners: Comprehensive Set ---
 # These will only be used if the custom pre-check passes
@@ -156,7 +156,7 @@ def load_sales_data_as_text():
             # Basic cleaning example: ensure 'Amount' is numeric if it exists
             if 'Amount' in df.columns:
                 # Attempt to convert 'Amount' to numeric, removing '$' and ','
-                # This might need adjustment based on your CSV's 'Amount' format
+              
                 if df['Amount'].dtype == 'object': # Only if it's string-like
                     df['Amount'] = df['Amount'].replace({'\$': '', ',': ''}, regex=True)
                     df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce').fillna(0) # Coerce errors to NaN, then fill with 0
