@@ -32,3 +32,4 @@ pip install --no-cache-dir pandas numpy
 
 ```
 
+GEMINI_API_KEY=AIzaSyDqzwsu6Ps5unM-SvW0d9-uJVLILAZkJPU
